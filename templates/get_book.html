@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Сдача книги</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <h1>Сдача книги</h1>
+    <form method="post">
+        <label for="book_name">Название книги:</label>
+        <input type="text" id="book_name" name="book_name" required><br><br>
+
+        <label for="book_author">Автор книги:</label>
+        <input type="text" id="book_author" name="book_author" required><br><br>
+
+        <label for="creation_date">Дата создания:</label>
+        <input type="date" id="creation_date" name="creation_date" required><br><br>
+
+        <label for="student_name">ФИО школьника:</label>
+        <input type="text" id="student_name" name="student_name" required><br><br>
+
+        <input type="submit" value="Сдать книгу">
+    </form>
+    {% if result %}
+    <h2>Результат:</h2>
+    <p>{{ result }}</p>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Назад</a>
+</body>
+</html>

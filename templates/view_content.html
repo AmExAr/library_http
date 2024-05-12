@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Содержимое представления (VIEW)</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <h1>Содержимое представления (VIEW): {{ view_name }}</h1>
+    <table>
+        <tr>
+            {% for column in column_names %}
+            <th>{{ column }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in view_content %}
+        <tr>
+            {% for value in row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('dashboard') }}">Назад</a>
+</body>
+</html>

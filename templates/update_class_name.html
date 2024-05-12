@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Обновить название класса</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <h1>Обновить название класса</h1>
+    <form method="post">
+        <label for="old_class_name">Текущее название класса:</label>
+        <input type="text" id="old_class_name" name="old_class_name" required><br><br>
+
+        <label for="new_class_name">Новое название класса:</label>
+        <input type="text" id="new_class_name" name="new_class_name" required><br><br>
+
+        <input type="submit" value="Обновить название">
+    </form>
+    {% if result %}
+    <h2>Результат:</h2>
+    <p>{{ result }}</p>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Назад</a>
+</body>
+</html>

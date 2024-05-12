@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Обновить информацию студента</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <h1>Обновить информацию студента</h1>
+    <form method="post">
+        <label for="fio">ФИО:</label>
+        <input type="text" id="fio" name="fio" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="tel">Телефон:</label>
+        <input type="tel" id="tel" name="tel" required><br><br>
+
+        <label for="old_email">Старый Email:</label>
+        <input type="email" id="old_email" name="old_email" required><br><br>
+
+        <input type="submit" value="Обновить информацию">
+    </form>
+    {% if result %}
+    <h2>Результат:</h2>
+    <p>{{ result }}</p>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Назад</a>
+</body>
+</html>
