@@ -23,7 +23,7 @@ def login():
             return redirect(url_for('dashboard'))
         except psycopg2.Error as e:
             error = "Неверное имя пользователя или пароль"
-            return render_template('login.html', error=error)
+            return render_template('./login.html', error=error)
 
     return render_template('login.html')
 
