@@ -45,7 +45,7 @@ def dashboard():
 # Маршрут для страницы с формой запроса к базе данных
 @app.route('/query', methods=['GET', 'POST'])
 def query():
-    if 'username' in session:
+    if 'db_user' in session:
         if request.method == 'POST':
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
