@@ -46,6 +46,7 @@ def query():
             query = request.form['query']
 
             # Выполнение запроса к базе данных
+            cur = conn.connect()
             cur.execute(query)
             conn.commit()
             result = cur.fetchall()
