@@ -63,6 +63,7 @@ def query():
                     )
                     cur = conn.cursor()
                     cur.execute(query)
+                    column_names = [desc[0] for desc in cur.description]
                     conn.commit()
                     result = cur.fetchall()
                     return render_template('query.html', result=[dict(zip(column_names, row)) for row in result])
