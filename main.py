@@ -100,6 +100,9 @@ def change_book():
                 AND name_book = %s;
             """
             values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
+            
+            db_user = session.get('db_user')
+            db_pass = session.get('db_pass')
             try:
                 conn = psycopg2.connect(
                     host="localhost",
