@@ -80,7 +80,7 @@ def add_book():
 
 @app.route('/change_book', methods=['GET', 'POST'])
 def change_book():
-    if db_user in session:
+    if 'db_user' in session:
         if request.method == 'POST':
             author = request.form['author']
             publisher = request.form['publisher']
