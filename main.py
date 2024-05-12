@@ -44,36 +44,40 @@ def dashboard():
     
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
-    if request.method == 'POST':
-        author = request.form['author'].strip()
-        publisher = request.form['publisher'].strip()
-        creation_date = request.form['creation_date']
-        name_book = request.form['name_book'].strip()
-        genre = request.form['genre'].strip()
-        all_count = request.form['all_count']
+    if 'db_user' in session:
+        if request.method == 'POST':
+            author = request.form['author'].strip()
+            publisher = request.form['publisher'].strip()
+            creation_date = request.form['creation_date']
+            name_book = request.form['name_book'].strip()
+            genre = request.form['genre'].strip()
+            all_count = request.form['all_count']
 
-        if not all([author, publisher, creation_date, name_book, genre, all_count]):
-            error = "Пожалуйста, заполните все поля."
-            return render_template('add_book.html', error=error, author=author, publisher=publisher,
-                                   creation_date=creation_date, name_book=name_book, genre=genre, all_count=all_count)
-        db_user = session.get('db_user')
-        db_pass = session.get('db_pass')
-            
-        if db_user and db_pass:
-            conn = psycopg2.connect(
-                host="localhost",
-                database="library_db",
-                user=db_user,
-                password=db_pass
-            )
-            cur = conn.cursor()
-            cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
-            column_names = [desc[0] for desc in cur.description]
-            result = cur.statusmessage
-            conn.commit()
-            cur.close()
-            return render_template('add_book.html', result=result)
-    return render_template('add_book.html')
+            if not all([author, publisher, creation_date, name_book, genre, all_count]):
+                error = "Пожалуйста, заполните все поля."
+                return render_template('add_book.html', error=error, author=author, publisher=publisher,
+                                    creation_date=creation_date, name_book=name_book, genre=genre, all_count=all_count)
+            db_user = session.get('db_user')
+            db_pass = session.get('db_pass')
+                
+            if db_user and db_pass:
+                conn = psycopg2.connect(
+                    host="localhost",
+                    database="library_db",
+                    user=db_user,
+                    password=db_pass
+                )
+                cur = conn.cursor()
+                cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
+                column_names = [desc[0] for desc in cur.description]
+                result = cur.statusmessage
+                conn.commit()
+                cur.close()
+                return render_template('add_book.html', result=result)
+        return render_template('add_book.html')
+    else:
+        return redirect(url_for('login'))
+        
 
 # Маршрут для страницы с формой запроса к базе данных
 @app.route('/query', methods=['GET', 'POST'])
