@@ -114,7 +114,8 @@ def change_book():
                 result = "Книга успешно обновлена."
             except mysql.connector.Error as error:
                 result = f"Ошибка при обновлении книги: {error}"        
-        return render_template('change_book.html', result=result)
+            return render_template('change_book.html', result=result)
+        return render_template('change_book.html')
     else:
         return redirect(url_for('login'))
 
