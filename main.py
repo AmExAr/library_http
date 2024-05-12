@@ -15,6 +15,8 @@ def login():
 
         try:
             # Попытка подключения к базе данных с учетными данными пользователя
+            
+            
             conn = psycopg2.connect(
                 host="localhost",
                 database="library_db",
@@ -23,6 +25,7 @@ def login():
             )
             cur = conn.cursor()
             session['username'] = username
+            session['password'] = password
             return redirect(url_for('dashboard'))
         except psycopg2.Error as e:
             error = "Неверное имя пользователя или пароль"
@@ -46,7 +49,13 @@ def query():
             query = request.form['query']
 
             # Выполнение запроса к базе данных
-            cur = conn.connect()
+            conn = psycopg2.connect(
+                host="localhost",
+                database="library_db",
+                user=session.get('username'),
+                password=session.get('password')
+            )
+            cur = conn.cursor()
             cur.execute(query)
             conn.commit()
             result = cur.fetchall()
