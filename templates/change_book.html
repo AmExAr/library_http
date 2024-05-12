@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Обновить книгу</title>
+</head>
+<body>
+    <h1>Обновить книгу</h1>
+    <form method="post">
+        <h2>Выберите книгу для обновления</h2>
+        <label for="author">Автор:</label>
+        <input type="text" id="author" name="author" required><br><br>
+
+        <label for="publisher">Издательство:</label>
+        <input type="text" id="publisher" name="publisher" required><br><br>
+
+        <label for="name_book">Название книги:</label>
+        <input type="text" id="name_book" name="name_book" required><br><br>
+
+        <h2>Введите новые данные</h2>
+        <label for="new_author">Новый автор:</label>
+        <input type="text" id="new_author" name="new_author" required><br><br>
+
+        <label for="new_publisher">Новое издательство:</label>
+        <input type="text" id="new_publisher" name="new_publisher" required><br><br>
+
+        <label for="new_creation_date">Новая дата создания:</label>
+        <input type="date" id="new_creation_date" name="new_creation_date" required><br><br>
+
+        <label for="new_name_book">Новое название книги:</label>
+        <input type="text" id="new_name_book" name="new_name_book" required><br><br>
+
+        <label for="new_genre">Новый жанр:</label>
+        <input type="text" id="new_genre" name="new_genre" required><br><br>
+
+        <input type="submit" value="Обновить книгу">
+    </form>
+    {% if result %}
+    <h2>Результат:</h2>
+    <p>{{ result }}</p>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Назад</a>
+</body>
+</html>

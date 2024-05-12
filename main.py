@@ -41,7 +41,7 @@ def dashboard():
         return render_template('dashboard.html')
     else:
         return redirect(url_for('login'))
-    
+
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
     if 'db_user' in session:
@@ -77,7 +77,57 @@ def add_book():
         return render_template('add_book.html')
     else:
         return redirect(url_for('login'))
-        
+
+@app.route('/change_book', methods=['GET', 'POST'])
+def change_book():
+    if db_user in session:
+        if request.method == 'POST':
+            author = request.form['author']
+            publisher = request.form['publisher']
+            name_book = request.form['name_book']
+            new_author = request.form['new_author']
+            new_publisher = request.form['new_publisher']
+            new_creation_date = request.form['new_creation_date']
+            new_name_book = request.form['new_name_book']
+            new_genre = request.form['new_genre']
+
+            # SQL-запрос для обновления книги
+            update_query = """
+                UPDATE books
+                SET author = %s, publisher = %s, creation_date = %s, name_book = %s, genre = %s
+                WHERE author = %s
+                AND publisher = %s
+                AND name_book = %s;
+            """
+            values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
+            try:
+                conn = psycopg2.connect(
+                    host="localhost",
+                    database="library_db",
+                    user=db_user,
+                    password=db_pass
+                )
+                cur = conn.cursor()
+                cur.execute(update_query, values)
+                conn.commit()
+                cur.close()
+                result = "Книга успешно обновлена."
+            except mysql.connector.Error as error:
+                result = f"Ошибка при обновлении книги: {error}"        
+        return render_template('change_book.html', result=result)
+    else:
+        return redirect(url_for('login'))
+
+
+
+@app.route('/delete_book', methods=['GET', 'POST'])
+@app.route('/list_books', methods=['GET', 'POST'])
+@app.route('/give_book', methods=['GET', 'POST'])
+@app.route('/get_book', methods=['GET', 'POST']) 
+@app.route('/new_academic_year', methods=['GET', 'POST'])
+@app.route('/new_student', methods=['GET', 'POST'])
+@app.route('/edit_student', methods=['GET', 'POST'])
+@app.route('/occupied_books_view', methods=['GET'])
 
 # Маршрут для страницы с формой запроса к базе данных
 @app.route('/query', methods=['GET', 'POST'])
