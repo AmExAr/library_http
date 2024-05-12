@@ -68,7 +68,7 @@ def add_book():
                     password=db_pass
                 )
                 cur = conn.cursor()
-                cur.execute(f'CALL add_book({author}, {publisher}, {creation_date}, {name_book}, {genre}, {all_count})')
+                cur.execute(f'CALL add_book(\'{author}\', \'{publisher}\', \'{creation_date}\', \'{name_book}\', \'{genre}\', \'{all_count}\')')
                 #cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
                 result = cur.statusmessage
                 conn.commit()
