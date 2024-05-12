@@ -58,8 +58,8 @@ def query():
                     conn = psycopg2.connect(
                         host="localhost",
                         database="library_db",
-                        user=session.get('username'),
-                        password=session.get('password')
+                        user=db_user,
+                        password=db_pass
                     )
                     cur = conn.cursor()
                     cur.execute(query)
