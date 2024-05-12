@@ -68,8 +68,8 @@ def add_book():
                     password=db_pass
                 )
                 cur = conn.cursor()
-                cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
-                column_names = [desc[0] for desc in cur.description]
+                cur.execute(f'CALL add_book({author}, {publisher}, {creation_date}, {name_book}, {genre}, {all_count})')
+                #cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
                 result = cur.statusmessage
                 conn.commit()
                 cur.close()
