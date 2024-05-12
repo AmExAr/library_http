@@ -13,6 +13,9 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
+        session['db_user'] = username
+        session['db_pass'] = password
+        
         try:
             # Попытка подключения к базе данных с учетными данными пользователя
             
@@ -24,8 +27,6 @@ def login():
                 password=password
             )
             cur = conn.cursor()
-            session['username'] = username
-            session['password'] = password
             return redirect(url_for('dashboard'))
         except psycopg2.Error as e:
             error = "Неверное имя пользователя или пароль"
@@ -36,7 +37,7 @@ def login():
 # Маршрут для страницы с выбором функционала базы данных
 @app.route('/dashboard')
 def dashboard():
-    if 'username' in session:
+    if 'db_user' in session:
         return render_template('dashboard.html')
     else:
         return redirect(url_for('login'))
@@ -46,21 +47,28 @@ def dashboard():
 def query():
     if 'username' in session:
         if request.method == 'POST':
-            query = request.form['query']
-
-            # Выполнение запроса к базе данных
-            conn = psycopg2.connect(
-                host="localhost",
-                database="library_db",
-                user=session.get('username'),
-                password=session.get('password')
-            )
-            cur = conn.cursor()
-            cur.execute(query)
-            conn.commit()
-            result = cur.fetchall()
-
-            return render_template('query.html', result=result)
+            db_user = session.get('db_user')
+            db_pass = session.get('db_pass')
+            
+            if db_user and db_pass:
+                try:
+                    query = request.form['query']
+                    
+                    # Выполнение запроса к базе данных
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=session.get('username'),
+                        password=session.get('password')
+                    )
+                    cur = conn.cursor()
+                    cur.execute(query)
+                    conn.commit()
+                    result = cur.fetchall()
+                    return render_template('query.html', result=result)
+                except (Exception, psycopg2.Error) as error:
+                    print("Ошибка при выполнении запроса SQL", error)
+                    return str(error), 500
         else:
             return render_template('query.html')
     else:
