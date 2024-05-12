@@ -69,9 +69,10 @@ def add_book():
             cur = conn.cursor()
             cur.callproc('add_book', [author, publisher, creation_date, name_book, genre, all_count])
             column_names = [desc[0] for desc in cur.description]
+            result = cur.statusmessage
             conn.commit()
             cur.close()
-            return redirect(url_for('dashboard'))
+            return render_template('add_book.html', result=result)
     return render_template('add_book.html')
 
 # Маршрут для страницы с формой запроса к базе данных

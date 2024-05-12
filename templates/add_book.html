@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Запрос к базе данных</title>
+    <title>Добавить книгу</title>
 </head>
 <body>
-    <h1>Запрос к базе данных</h1>
+    <h1>Добавить книгу</h1>
     <form method="post">
-        <label for="query">Запрос:</label>
-        <textarea id="query" name="query" rows="1" required></textarea>
-        <br>
-        <input type="submit" value="Отправить запрос">
+        <label for="author">Автор:</label>
+        <input type="text" id="author" name="author" required><br><br>
+
+        <label for="publisher">Издательство:</label>
+        <input type="text" id="publisher" name="publisher" required><br><br>
+
+        <label for="creation_date">Дата создания:</label>
+        <input type="date" id="creation_date" name="creation_date" required><br><br>
+
+        <label for="name_book">Название книги:</label>
+        <input type="text" id="name_book" name="name_book" required><br><br>
+
+        <label for="genre">Жанр:</label>
+        <input type="text" id="genre" name="genre" required><br><br>
+
+        <label for="all_count">Количество экземпляров:</label>
+        <input type="number" id="all_count" name="all_count" required><br><br>
+
+        <input type="submit" value="Добавить книгу">
     </form>
     {% if result %}
-    <h2>Результат запроса:</h2>
-    <table>
-        <tr>
-            {% for column in result[0].keys() %}
-            <th>{{ column }}</th>
-            {% endfor %}
-        </tr>
-        {% for row in result %}
-        <tr>
-            {% for value in row.values() %}
-            <td>{{ value }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
+    <h2>Результат:</h2>
+    <p>{{ result }}</p>
     {% endif %}
     <a href="{{ url_for('dashboard') }}">Назад</a>
 </body>
