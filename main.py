@@ -65,7 +65,7 @@ def query():
                     cur.execute(query)
                     conn.commit()
                     result = cur.fetchall()
-                    return render_template('query.html', result=result)
+                    return render_template('query.html', result=[dict(zip(column_names, row)) for row in result])
                 except (Exception, psycopg2.Error) as error:
                     print("Ошибка при выполнении запроса SQL", error)
                     return str(error), 500
