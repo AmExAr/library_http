@@ -363,12 +363,12 @@ def new_student():
                     password=db_pass
                 )
                 cur = conn.cursor()
-                cur.execute(f'CALL create_student(\'{fio}\', \'{email}\', \'{tel}\', \'{cname}\')')
+                cur.execute(f'SELECT create_student(\'{fio}\', \'{email}\', \'{tel}\', \'{cname}\');')
                 conn.commit()
                 cur.close()
-                result = f"Студент успешно добавлен"
+                result = f"Школьник успешно добавлен"
             except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при добавлении нового студента: {error}"
+                result = f"Ошибка при добавлении нового школьник: {error}"
             return render_template('new_student.html', result=result)
             
         return render_template('new_student.html')
@@ -383,7 +383,7 @@ def edit_student():
             email = request.form['email']
             tel = request.form['tel']
             old_email = request.form['old_email']
-            query = "UPDATE students_info SET FIO = %s, email = %s, tel = %s WHERE email = %s"
+            query = "UPDATE students_info SET FIO = %s, email = %s, tel = %s WHERE email = %s;"
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
@@ -422,11 +422,11 @@ def occupied_books_view():
                 password=db_pass
             )
             cur = conn.cursor()
-            cur.execute('SELECT * FROM occupied_books_view')
+            cur.execute('SELECT * FROM occupied_books_view;')
             conn.commit()
             cur.close()
             column_names = [desc[0] for desc in cur.description]
-            return render_template('view_content.html', view_name=view_name, view_content=view_content, column_names=column_names)
+            return render_template('view_content.html', view_content=view_content, column_names=column_names)
         except (Exception, psycopg2.Error) as error:
             print("Ошибка при получении содержимого представления:", error)
             return str(error), 500
