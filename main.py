@@ -423,6 +423,7 @@ def occupied_books_view():
             )
             cur = conn.cursor()
             cur.execute('SELECT * FROM occupied_books_view;')
+            view_content = cur.fetchall()
             conn.commit()
             cur.close()
             column_names = [desc[0] for desc in cur.description]
