@@ -163,7 +163,7 @@ def list_books():
         if request.method == 'POST':
             student_name = request.form['student_name']
 
-            _query = """
+            query = """
                 SELECT author, name_book
                 FROM books
                 WHERE id_number = (
@@ -191,7 +191,7 @@ def list_books():
                     password=db_pass
                 )
                 cur = conn.cursor()
-                cur.execute(update_query, student_name)
+                cur.execute(query, student_name)
                 result = cur.fetchall()
                 column_names = [desc[0] for desc in cur.description]
                 conn.commit()
@@ -200,7 +200,8 @@ def list_books():
                 return render_template('book_list.html', result=result, column_names=column_names)
             except (Exception, psycopg2.Error) as error:
                 print("Ошибка при получении содержимого представления:", error)
-            return error
+                return """<h1>Ошибка вывода списка: </h1>
+                <p>""" + str(error) + """ </p>"""
         return render_template('book_list.html')
     else:
         return redirect(url_for('login'))
