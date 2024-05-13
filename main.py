@@ -201,7 +201,7 @@ def list_books():
             except (Exception, psycopg2.Error) as error:
                 print("Ошибка при получении содержимого представления:", error)
                 return """<h1>Ошибка вывода списка: </h1>
-                <p>""" + str(error) + """ </p>"""
+                <p>""" + str(error) + """ </p><br><br><a href="{{ url_for('dashboard') }}">Назад</a>"""
         return render_template('book_list.html')
     else:
         return redirect(url_for('login'))
