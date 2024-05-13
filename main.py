@@ -46,12 +46,12 @@ def dashboard():
 def add_book():
     if 'db_user' in session:
         if request.method == 'POST':
-            author = "'" + request.form['author'] + "'"
-            publisher = "'" + request.form['publisher'] + "'"
+            author = request.form['author'].strip()
+            publisher = request.form['publisher'].strip()
             creation_date = request.form['creation_date']
-            name_book = "'" + request.form['name_book'] + "'"
-            genre = "'" + request.form['genre'] + "'"
-            all_count = "'" + request.form['all_count'] + "'"
+            name_book = request.form['name_book'].strip()
+            genre = request.form['genre'].strip()
+            all_count = request.form['all_count']
 
             if not all([author, publisher, creation_date, name_book, genre, all_count]):
                 error = "Пожалуйста, заполните все поля."
@@ -82,22 +82,22 @@ def add_book():
 def change_book():
     if 'db_user' in session:
         if request.method == 'POST':
-            author = "'" + request.form['author'] + "'"
-            publisher = "'" + request.form['publisher'] + "'"
-            name_book = "'" + request.form['name_book'] + "'"
-            new_author = "'" + request.form['new_author'] + "'"
-            new_publisher = "'" + request.form['new_publisher'] + "'"
+            author = request.form['author']
+            publisher = request.form['publisher']
+            name_book = request.form['name_book']
+            new_author = request.form['new_author']
+            new_publisher = request.form['new_publisher']
             new_creation_date = request.form['new_creation_date']
-            new_name_book = "'" + request.form['new_name_book'] + "'"
-            new_genre = "'" + request.form['new_genre'] + "'"
+            new_name_book = request.form['new_name_book']
+            new_genre = request.form['new_genre']
 
             # SQL-запрос для обновления книги
             update_query = """
                 UPDATE books
-                SET author = %s, publisher = %s, creation_date = %s, name_book = %s, genre = %s
-                WHERE author = %s
-                AND publisher = %s
-                AND name_book = %s;
+                SET author = \'%s\', publisher = \'%s\', creation_date = \'%s\', name_book = \'%s\', genre = \'%s\'
+                WHERE author = \'%s\'
+                AND publisher = \'%s\'
+                AND name_book = \'%s\';
             """
             values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
             
@@ -126,12 +126,12 @@ def change_book():
 def delete_book():
     if 'db_user' in session:
         if request.method == 'POST':
-            author = "'" + request.form['author'] + "'"
-            publisher = "'" + request.form['publisher'] + "'"
-            name_book = "'" + request.form['name_book'] + "'"
+            author = request.form['author']
+            publisher = request.form['publisher']
+            name_book = request.form['name_book']
 
-            query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
-            query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
+            query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
+            query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
             
             values = (author, publisher, name_book)
             
@@ -161,7 +161,7 @@ def delete_book():
 def list_books():
     if 'db_user' in session:
         if request.method == 'POST':
-            student_name = "'" + request.form['student_name'] + "'"
+            student_name = request.form['student_name']
 
             query = """
                 SELECT author, name_book
@@ -175,7 +175,7 @@ def list_books():
                         WHERE UUID_ = (
                             SELECT UUID_
                             FROM students_info
-                            WHERE FIO = %s
+                            WHERE FIO = \'%s\'
                         )
                     )
                 );
@@ -210,10 +210,10 @@ def list_books():
 def give_book():
     if 'db_user' in session:
         if request.method == 'POST':
-            author = "'" + request.form['author'] + "'"
-            publisher = "'" + request.form['publisher'] + "'"
-            book_name = "'" + request.form['book_name'] + "'"
-            student_name = "'" + request.form['student_name'] + "'"
+            author = request.form['author']
+            publisher = request.form['publisher']
+            book_name = request.form['book_name']
+            student_name = request.form['student_name']
             start_date = request.form['start_date']
             end_date = request.form['end_date']
 
@@ -222,11 +222,11 @@ def give_book():
                 INSERT INTO reserved_books (BUID, UUID_, first_day, last_day)
                 VALUES (
                     (SELECT BUID FROM book_info WHERE status is TRUE AND id_number = (SELECT id_number FROM books
-                    WHERE author = %s
-                    AND publisher = %s
-                    AND name_book = %s) LIMIT 1),
-                    (SELECT UUID_ FROM students_info WHERE FIO = %s),
-                    %s, %s
+                    WHERE author = \'%s\'
+                    AND publisher = \'%s\'
+                    AND name_book = \'%s\') LIMIT 1),
+                    (SELECT UUID_ FROM students_info WHERE FIO = \'%s\'),
+                    \'%s\', \'%s\'
                 );
             """
             values = (author, publisher, book_name, student_name, start_date, end_date, student_name)
@@ -256,10 +256,10 @@ def give_book():
 def get_book():
     if 'db_user' in session:
         if request.method == 'POST':
-            book_name = "'" + request.form['book_name'] + "'"
-            book_author = "'" + request.form['book_author'] + "'"
+            book_name = request.form['book_name']
+            book_author = request.form['book_author']
             creation_date = request.form['creation_date']
-            student_name =  "'" + request.form['student_name'] + "'"
+            student_name = request.form['student_name']
 
             # SQL-запрос для обновления книги
             query = """
@@ -267,10 +267,10 @@ def get_book():
                 SET status = TRUE
                 FROM reserved_books rb
                 JOIN books b ON rb.BUID = bi.id_number AND b.id_number = bi.id_number
-                WHERE b.name_book = %s
-                  AND b.author = %s
-                  AND b.creation_date = %s
-                  AND rb.UUID_ = (SELECT UUID_ FROM students_info WHERE FIO = %s);
+                WHERE b.name_book = \'%s\'
+                  AND b.author = \'%s\'
+                  AND b.creation_date = \'%s\'
+                  AND rb.UUID_ = (SELECT UUID_ FROM students_info WHERE FIO = \'%s\');
             """
             values = (book_name, book_author, creation_date, student_name)
             
@@ -299,9 +299,9 @@ def get_book():
 def update_class_name():
     if 'db_user' in session:
         if request.method == 'POST':
-            old_class_name = "'" + request.form['old_class_name'] + "'"
-            new_class_name = "'" + request.form['new_class_name'] + "'"
-            query = "UPDATE class_number SET class_name = %s WHERE class_name = %s"
+            old_class_name = request.form['old_class_name']
+            new_class_name = request.form['new_class_name']
+            query = "UPDATE class_number SET class_name = \'%s\' WHERE class_name = \'%s\'"
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
@@ -362,11 +362,11 @@ def new_student():
 def edit_student():
     if 'db_user' in session:
         if request.method == 'POST':
-            fio = "'" + request.form['fio'] + "'"
-            email = "'" + request.form['email'] + "'"
+            fio = request.form['fio']
+            email = request.form['email']
             tel = request.form['tel']
-            old_email = "'" + request.form['old_email'] + "'"
-            query = "UPDATE students_info SET FIO = %s, email = %s, tel = %s WHERE email = %s;"
+            old_email = request.form['old_email']
+            query = "UPDATE students_info SET FIO = \'%s\', email = \'%s\', tel = \'%s\' WHERE email = \'%s\';"
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
