@@ -200,7 +200,7 @@ def list_books():
                 return render_template('book_list.html', result=result, column_names=column_names)
             except (Exception, psycopg2.Error) as error:
                 print("Ошибка при получении содержимого представления:", error)
-            return f"{error}"
+            return error
         return render_template('book_list.html')
     else:
         return redirect(url_for('login'))
