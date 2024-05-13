@@ -133,7 +133,7 @@ def delete_book():
             query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
             query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
             
-            values = (author, publisher, name_books)
+            values = (author, publisher, name_book)
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
