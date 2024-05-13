@@ -130,26 +130,8 @@ def delete_book():
             publisher = request.form['publisher']
             name_book = request.form['name_book']
 
-            query1 = """
-                DELETE FROM book_info
-                WHERE id_number = (
-                    SELECT id_number
-                    FROM books
-                    WHERE author = %s
-                    AND publisher = %s
-                    AND name_book = %s
-                );
-            """
-            query2 = """
-                DELETE FROM books
-                WHERE id_number = (
-                    SELECT id_number
-                    FROM books
-                    WHERE author = %s
-                    AND publisher = %s
-                    AND name_book = %s
-                );
-            """
+            query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
+            query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
             
             values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
             
