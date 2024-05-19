@@ -232,8 +232,14 @@ def give_book():
                     (SELECT UUID_ FROM students_info WHERE FIO = %s),
                     %s, %s
                 );
+                UPDATE book_info SET status = FALSE
+                WHERE BUID = (
+                    SELECT BUID FROM reserved_books 
+                    WHERE UUID_ = (
+                        SELECT UUID_ FROM students_info 
+                        WHERE FIO = %s) LIMIT 1);
             """
-            values = (author, publisher, book_name, student_name, start_date, end_date)
+            values = (author, publisher, book_name, student_name, start_date, end_date, student_name)
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
@@ -268,13 +274,18 @@ def get_book():
             # SQL-запрос для обновления книги
             query = """
                 UPDATE book_info bi
-                SET status = TRUE
+                SET status = FALSE
                 FROM reserved_books rb
-                JOIN books b ON rb.BUID = bi.id_number AND b.id_number = bi.id_number
-                WHERE b.name_book = %s
+                JOIN books b ON b.id_number = bi.id_number
+                WHERE bi.BUID = rb.BUID
+                  AND b.name_book = %s
                   AND b.author = %s
                   AND b.creation_date = %s
-                  AND rb.UUID_ = (SELECT UUID_ FROM students_info WHERE FIO = %s);
+                  AND rb.UUID_ = (
+                    SELECT UUID_
+                    FROM students_info
+                    WHERE FIO = %s
+                  );
             """
             values = (book_name, book_author, creation_date, student_name)
             
