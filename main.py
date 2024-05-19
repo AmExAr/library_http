@@ -226,11 +226,11 @@ def give_book():
                 INSERT INTO reserved_books (BUID, UUID_, first_day, last_day)
                 VALUES (
                     (SELECT BUID FROM book_info WHERE status is TRUE AND id_number = (SELECT id_number FROM books
-                    WHERE author = \'%s\'
-                    AND publisher = \'%s\'
-                    AND name_book = \'%s\') LIMIT 1),
-                    (SELECT UUID_ FROM students_info WHERE FIO = \'%s\'),
-                    \'%s\', \'%s\'
+                    WHERE author = %s
+                    AND publisher = %s
+                    AND name_book = %s) LIMIT 1),
+                    (SELECT UUID_ FROM students_info WHERE FIO = %s),
+                    %s, %s
                 );
             """
             values = (author, publisher, book_name, student_name, start_date, end_date)
