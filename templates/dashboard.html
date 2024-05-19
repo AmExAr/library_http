@@ -7,17 +7,19 @@
 <body>
     <h1>Выбор функционала базы данных</h1>
     <ul>
+        {% if session['db_user'] == 'admin' %}
+            <li><a href="{{ url_for('change_book') }}">Изменить книгу</a></li>
+            <li><a href="{{ url_for('delete_book') }}">Удалить книгу</a></li>
+            <li><a href="{{ url_for('update_class_name') }}">Обновить название класса</a></li>
+            <li><a href="{{ url_for('new_student') }}">Добавить школьника</a></li>
+            <li><a href="{{ url_for('edit_student') }}">Изменить информацию о школьнике</a></li>
+            <li><a href="{{ url_for('query') }}">Выполнить запрос к базе данных</a></li>
+        {% endif %}
         <li><a href="{{ url_for('add_book') }}">Добавить книгу</a></li>
-        <li><a href="{{ url_for('change_book') }}">Изменить книгу</a></li>
-        <li><a href="{{ url_for('delete_book') }}">Удалить книгу</a></li>
         <li><a href="{{ url_for('list_books') }}">Список книг школьника</a></li>
         <li><a href="{{ url_for('give_book') }}">Выдать книгу</a></li>
         <li><a href="{{ url_for('get_book') }}">Вернуть книгу</a></li>
-        <li><a href="{{ url_for('update_class_name') }}">Обновить название класса</a></li>
-        <li><a href="{{ url_for('new_student') }}">Добавить школьника</a></li>
-        <li><a href="{{ url_for('edit_student') }}">Изменить информацию о школьнике</a></li>
         <li><a href="{{ url_for('occupied_books_view') }}">Список занятых книг</a></li>
-        <li><a href="{{ url_for('query') }}">Выполнить запрос к базе данных</a></li>
     </ul>
     <a href="{{ url_for('logout') }}">Выйти</a>
 </body>

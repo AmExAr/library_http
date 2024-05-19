@@ -81,79 +81,83 @@ def add_book():
 @app.route('/change_book', methods=['GET', 'POST'])
 def change_book():
     if 'db_user' in session:
-        if request.method == 'POST':
-            author = request.form['author']
-            publisher = request.form['publisher']
-            name_book = request.form['name_book']
-            new_author = request.form['new_author']
-            new_publisher = request.form['new_publisher']
-            new_creation_date = request.form['new_creation_date']
-            new_name_book = request.form['new_name_book']
-            new_genre = request.form['new_genre']
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                author = request.form['author']
+                publisher = request.form['publisher']
+                name_book = request.form['name_book']
+                new_author = request.form['new_author']
+                new_publisher = request.form['new_publisher']
+                new_creation_date = request.form['new_creation_date']
+                new_name_book = request.form['new_name_book']
+                new_genre = request.form['new_genre']
 
-            # SQL-запрос для обновления книги
-            update_query = """
-                UPDATE books
-                SET author = \'%s\', publisher = \'%s\', creation_date = \'%s\', name_book = \'%s\', genre = \'%s\'
-                WHERE author = \'%s\'
-                AND publisher = \'%s\'
-                AND name_book = \'%s\';
-            """
-            values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
-            
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            try:
-                conn = psycopg2.connect(
-                    host="localhost",
-                    database="library_db",
-                    user=db_user,
-                    password=db_pass
-                )
-                cur = conn.cursor()
-                cur.execute(update_query, values)
-                conn.commit()
-                cur.close()
-                result = "Книга успешно обновлена."
-            except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при обновлении книги: {error}"        
-            return render_template('change_book.html', result=result)
-        return render_template('change_book.html')
+                # SQL-запрос для обновления книги
+                update_query = """
+                    UPDATE books
+                    SET author = \'%s\', publisher = \'%s\', creation_date = \'%s\', name_book = \'%s\', genre = \'%s\'
+                    WHERE author = \'%s\'
+                    AND publisher = \'%s\'
+                    AND name_book = \'%s\';
+                """
+                values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
+                
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                try:
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=db_user,
+                        password=db_pass
+                    )
+                    cur = conn.cursor()
+                    cur.execute(update_query, values)
+                    conn.commit()
+                    cur.close()
+                    result = "Книга успешно обновлена."
+                except (Exception, psycopg2.Error) as error:
+                    result = f"Ошибка при обновлении книги: {error}"        
+                return render_template('change_book.html', result=result)
+            return render_template('change_book.html')
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
 @app.route('/delete_book', methods=['GET', 'POST'])
 def delete_book():
     if 'db_user' in session:
-        if request.method == 'POST':
-            author = request.form['author']
-            publisher = request.form['publisher']
-            name_book = request.form['name_book']
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                author = request.form['author']
+                publisher = request.form['publisher']
+                name_book = request.form['name_book']
 
-            query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
-            query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
-            
-            values = (author, publisher, name_book)
-            
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            try:
-                conn = psycopg2.connect(
-                    host="localhost",
-                    database="library_db",
-                    user=db_user,
-                    password=db_pass
-                )
-                cur = conn.cursor()
-                cur.execute(query1, (author, publisher, name_book))
-                cur.execute(query2, (author, publisher, name_book))
-                conn.commit()
-                cur.close()
-                result = "Книга успешно удалена."
-            except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при удалении книги: {error}"        
-            return render_template('delete_book.html', result=result)
-        return render_template('delete_book.html')
+                query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
+                query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
+
+                values = (author, publisher, name_book)
+
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                try:
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=db_user,
+                        password=db_pass
+                    )
+                    cur = conn.cursor()
+                    cur.execute(query1, (author, publisher, name_book))
+                    cur.execute(query2, (author, publisher, name_book))
+                    conn.commit()
+                    cur.close()
+                    result = "Книга успешно удалена."
+                except (Exception, psycopg2.Error) as error:
+                    result = f"Ошибка при удалении книги: {error}"        
+                return render_template('delete_book.html', result=result)
+            return render_template('delete_book.html')
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
@@ -298,96 +302,103 @@ def get_book():
 @app.route('/update_class_name', methods=['GET', 'POST'])
 def update_class_name():
     if 'db_user' in session:
-        if request.method == 'POST':
-            old_class_name = request.form['old_class_name']
-            new_class_name = request.form['new_class_name']
-            query = "UPDATE class_number SET class_name = \'%s\' WHERE class_name = \'%s\'"
-            
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            
-            try:
-                conn = psycopg2.connect(
-                    host="localhost",
-                    database="library_db",
-                    user=db_user,
-                    password=db_pass
-                )
-                cur = conn.cursor()
-                cur.execute(query, (new_class_name, old_class_name))
-                conn.commit()
-                cur.close()
-                result = f"Название класса '{old_class_name}' было изменено на '{new_class_name}'"
-            except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при изменении названия: {error}"
-            return render_template('update_class_name.html', result=result)
-            
-        return render_template('update_class_name.html')
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                old_class_name = request.form['old_class_name']
+                new_class_name = request.form['new_class_name']
+                query = "UPDATE class_number SET class_name = \'%s\' WHERE class_name = \'%s\'"
+                
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                
+                try:
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=db_user,
+                        password=db_pass
+                    )
+                    cur = conn.cursor()
+                    cur.execute(query, (new_class_name, old_class_name))
+                    conn.commit()
+                    cur.close()
+                    result = f"Название класса '{old_class_name}' было изменено на '{new_class_name}'"
+                except (Exception, psycopg2.Error) as error:
+                    result = f"Ошибка при изменении названия: {error}"
+                return render_template('update_class_name.html', result=result)       
+            return render_template('update_class_name.html')
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
 @app.route('/new_student', methods=['GET', 'POST'])
 def new_student():
     if 'db_user' in session:
-        if request.method == 'POST':
-            fio = request.form['fio']
-            email = request.form['email']
-            tel = request.form['tel']
-            cname = request.form['cname']
-            
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            
-            try:
-                conn = psycopg2.connect(
-                    host="localhost",
-                    database="library_db",
-                    user=db_user,
-                    password=db_pass
-                )
-                cur = conn.cursor()
-                cur.execute(f'SELECT create_student(\'{fio}\', \'{email}\', \'{tel}\', \'{cname}\');')
-                conn.commit()
-                cur.close()
-                result = f"Школьник успешно добавлен"
-            except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при добавлении нового школьник: {error}"
-            return render_template('new_student.html', result=result)
-            
-        return render_template('new_student.html')
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                fio = request.form['fio']
+                email = request.form['email']
+                tel = request.form['tel']
+                cname = request.form['cname']
+                
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                
+                try:
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=db_user,
+                        password=db_pass
+                    )
+                    cur = conn.cursor()
+                    cur.execute(f'SELECT create_student(\'{fio}\', \'{email}\', \'{tel}\', \'{cname}\');')
+                    conn.commit()
+                    cur.close()
+                    result = f"Школьник успешно добавлен"
+                except (Exception, psycopg2.Error) as error:
+                    result = f"Ошибка при добавлении нового школьник: {error}"
+                return render_template('new_student.html', result=result)
+                
+            return render_template('new_student.html')
+        else:
+            return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
 @app.route('/edit_student', methods=['GET', 'POST'])
 def edit_student():
     if 'db_user' in session:
-        if request.method == 'POST':
-            fio = request.form['fio']
-            email = request.form['email']
-            tel = request.form['tel']
-            old_email = request.form['old_email']
-            query = "UPDATE students_info SET FIO = \'%s\', email = \'%s\', tel = \'%s\' WHERE email = \'%s\';"
-            
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            
-            try:
-                conn = psycopg2.connect(
-                    host="localhost",
-                    database="library_db",
-                    user=db_user,
-                    password=db_pass
-                )
-                cur = conn.cursor()
-                cur.execute(query, (fio, email, tel, old_email))
-                conn.commit()
-                cur.close()
-                result = f"Информация о школьнике успешно обновлена"
-            except (Exception, psycopg2.Error) as error:
-                result = f"Ошибка при изменении информации: {error}"
-            return render_template('edit_student.html', result=result)
-            
-        return render_template('edit_student.html')
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                fio = request.form['fio']
+                email = request.form['email']
+                tel = request.form['tel']
+                old_email = request.form['old_email']
+                query = "UPDATE students_info SET FIO = \'%s\', email = \'%s\', tel = \'%s\' WHERE email = \'%s\';"
+                
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                
+                try:
+                    conn = psycopg2.connect(
+                        host="localhost",
+                        database="library_db",
+                        user=db_user,
+                        password=db_pass
+                    )
+                    cur = conn.cursor()
+                    cur.execute(query, (fio, email, tel, old_email))
+                    conn.commit()
+                    cur.close()
+                    result = f"Информация о школьнике успешно обновлена"
+                except (Exception, psycopg2.Error) as error:
+                    result = f"Ошибка при изменении информации: {error}"
+                return render_template('edit_student.html', result=result)
+                
+            return render_template('edit_student.html')
+        else:
+            return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
@@ -421,32 +432,35 @@ def occupied_books_view():
 @app.route('/query', methods=['GET', 'POST'])
 def query():
     if 'db_user' in session:
-        if request.method == 'POST':
-            db_user = session.get('db_user')
-            db_pass = session.get('db_pass')
-            
-            if db_user and db_pass:
-                try:
-                    query = request.form['query']
-                    
-                    # Выполнение запроса к базе данных
-                    conn = psycopg2.connect(
-                        host="localhost",
-                        database="library_db",
-                        user=db_user,
-                        password=db_pass
-                    )
-                    cur = conn.cursor()
-                    cur.execute(query)
-                    column_names = [desc[0] for desc in cur.description]
-                    conn.commit()
-                    result = cur.fetchall()
-                    return render_template('query.html', result=[dict(zip(column_names, row)) for row in result])
-                except (Exception, psycopg2.Error) as error:
-                    print("Ошибка при выполнении запроса SQL", error)
-                    return str(error), 500
+        if session.get('db_user') == 'admin':
+            if request.method == 'POST':
+                db_user = session.get('db_user')
+                db_pass = session.get('db_pass')
+                
+                if db_user and db_pass:
+                    try:
+                        query = request.form['query']
+                        
+                        # Выполнение запроса к базе данных
+                        conn = psycopg2.connect(
+                            host="localhost",
+                            database="library_db",
+                            user=db_user,
+                            password=db_pass
+                        )
+                        cur = conn.cursor()
+                        cur.execute(query)
+                        column_names = [desc[0] for desc in cur.description]
+                        conn.commit()
+                        result = cur.fetchall()
+                        return render_template('query.html', result=[dict(zip(column_names, row)) for row in result])
+                    except (Exception, psycopg2.Error) as error:
+                        print("Ошибка при выполнении запроса SQL", error)
+                        return str(error), 500
+            else:
+                return render_template('query.html')
         else:
-            return render_template('query.html')
+            return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
