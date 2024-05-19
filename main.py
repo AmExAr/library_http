@@ -95,10 +95,10 @@ def change_book():
                 # SQL-запрос для обновления книги
                 update_query = """
                     UPDATE books
-                    SET author = \'%s\', publisher = \'%s\', creation_date = \'%s\', name_book = \'%s\', genre = \'%s\'
-                    WHERE author = \'%s\'
-                    AND publisher = \'%s\'
-                    AND name_book = \'%s\';
+                    SET author = %s, publisher = %s, creation_date = %s, name_book = %s, genre = %s
+                    WHERE author = %s
+                    AND publisher = %s
+                    AND name_book = %s;
                 """
                 values = (new_author, new_publisher, new_creation_date, new_name_book, new_genre, author, publisher, name_book)
                 
@@ -133,8 +133,8 @@ def delete_book():
                 publisher = request.form['publisher']
                 name_book = request.form['name_book']
 
-                query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
-                query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = \'%s\' AND publisher = \'%s\' AND name_book = \'%s\');"""
+                query1 = """DELETE FROM book_info WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
+                query2 = """DELETE FROM books WHERE id_number = (SELECT id_number FROM books WHERE author = %s AND publisher = %s AND name_book = %s);"""
 
                 values = (author, publisher, name_book)
 
@@ -271,10 +271,10 @@ def get_book():
                 SET status = TRUE
                 FROM reserved_books rb
                 JOIN books b ON rb.BUID = bi.id_number AND b.id_number = bi.id_number
-                WHERE b.name_book = \'%s\'
-                  AND b.author = \'%s\'
-                  AND b.creation_date = \'%s\'
-                  AND rb.UUID_ = (SELECT UUID_ FROM students_info WHERE FIO = \'%s\');
+                WHERE b.name_book = %s
+                  AND b.author = %s
+                  AND b.creation_date = %s
+                  AND rb.UUID_ = (SELECT UUID_ FROM students_info WHERE FIO = %s);
             """
             values = (book_name, book_author, creation_date, student_name)
             
@@ -306,7 +306,7 @@ def update_class_name():
             if request.method == 'POST':
                 old_class_name = request.form['old_class_name']
                 new_class_name = request.form['new_class_name']
-                query = "UPDATE class_number SET class_name = \'%s\' WHERE class_name = \'%s\'"
+                query = "UPDATE class_number SET class_name = %s WHERE class_name = %s"
                 
                 db_user = session.get('db_user')
                 db_pass = session.get('db_pass')
@@ -375,7 +375,7 @@ def edit_student():
                 email = request.form['email']
                 tel = request.form['tel']
                 old_email = request.form['old_email']
-                query = "UPDATE students_info SET FIO = \'%s\', email = \'%s\', tel = \'%s\' WHERE email = \'%s\';"
+                query = "UPDATE students_info SET FIO = %s, email = %s, tel = %s WHERE email = %s;"
                 
                 db_user = session.get('db_user')
                 db_pass = session.get('db_pass')
