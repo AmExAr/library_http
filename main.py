@@ -179,7 +179,7 @@ def list_books():
                         WHERE UUID_ = (
                             SELECT UUID_
                             FROM students_info
-                            WHERE FIO = \'%s\'
+                            WHERE FIO = %s
                         )
                     )
                 );
@@ -195,7 +195,7 @@ def list_books():
                     password=db_pass
                 )
                 cur = conn.cursor()
-                cur.execute(query, student_name)
+                cur.execute(query, (student_name,))
                 result = cur.fetchall()
                 column_names = [desc[0] for desc in cur.description]
                 conn.commit()
@@ -233,7 +233,7 @@ def give_book():
                     \'%s\', \'%s\'
                 );
             """
-            values = (author, publisher, book_name, student_name, start_date, end_date, student_name)
+            values = (author, publisher, book_name, student_name, start_date, end_date)
             
             db_user = session.get('db_user')
             db_pass = session.get('db_pass')
