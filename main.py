@@ -276,8 +276,7 @@ def get_book():
                 UPDATE book_info bi
                 SET status = FALSE
                 FROM books b
-                JOIN book_info bi ON b.id_number = bi.id_number
-                JOIN reserved_books rb ON bi.BUID = rb.BUID
+                JOIN reserved_books rb ON b.id_number = bi.id_number
                 WHERE b.name_book = %s
                     AND b.author = %s
                     AND b.creation_date = %s
