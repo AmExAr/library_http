@@ -273,19 +273,16 @@ def get_book():
 
             # SQL-запрос для обновления книги
             query = """
-                UPDATE book_info
-                SET status = FALSE
+                UPDATE book_info bi
+                SET status = true
                 FROM books b
-                JOIN book_info bi ON b.id_number = bi.id_number
-                JOIN reserved_books rb ON bi.BUID = rb.BUID
+                INNER JOIN reserved_books rb ON bi.BUID = rb.BUID
+                INNER JOIN students_info si ON rb.UUID_ = si.UUID_
                 WHERE b.name_book = %s
                     AND b.author = %s
                     AND b.creation_date = %s
-                    AND rb.UUID_ = (
-                        SELECT UUID_
-                        FROM students_info
-                        WHERE FIO = %s
-                    );
+                    AND si.FIO = %s;
+
             """
             values = (book_name, book_author, creation_date, student_name)
             
