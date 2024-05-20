@@ -275,14 +275,18 @@ def get_book():
             query = """
                 UPDATE book_info bi
                 SET status = true
-                FROM books b
-                INNER JOIN reserved_books rb ON bi.BUID = rb.BUID
-                INNER JOIN students_info si ON rb.UUID_ = si.UUID_
-                WHERE b.name_book = %s
+                FROM (
+                  SELECT bi.BUID
+                  FROM book_info bi
+                  INNER JOIN books b ON bi.id_number = b.id_number
+                  INNER JOIN reserved_books rb ON bi.BUID = rb.BUID
+                  INNER JOIN students_info si ON rb.UUID_ = si.UUID_
+                  WHERE b.name_book = %s
                     AND b.author = %s
                     AND b.creation_date = %s
-                    AND si.FIO = %s;
-
+                    AND si.FIO = %s
+                ) t
+                WHERE bi.BUID = t.BUID;
             """
             values = (book_name, book_author, creation_date, student_name)
             
