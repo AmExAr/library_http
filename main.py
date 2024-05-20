@@ -273,7 +273,7 @@ def get_book():
 
             # SQL-запрос для обновления книги
             query = """
-                UPDATE book_info bi
+                UPDATE book_info
                 SET status = FALSE
                 FROM books b
                 JOIN book_info bi ON b.id_number = bi.id_number
