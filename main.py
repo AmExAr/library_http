@@ -237,7 +237,7 @@ def give_book():
                     SELECT BUID FROM reserved_books 
                     WHERE UUID_ = (
                         SELECT UUID_ FROM students_info 
-                        WHERE FIO = %s) LIMIT 1);
+                        WHERE FIO = %s)   ORDER BY number DESC LIMIT 1);
             """
             values = (author, publisher, book_name, student_name, start_date, end_date, student_name)
             
