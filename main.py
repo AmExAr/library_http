@@ -276,7 +276,8 @@ def get_book():
                 UPDATE book_info bi
                 SET status = FALSE
                 FROM books b
-                JOIN reserved_books rb ON b.id_number = bi.id_number
+                JOIN book_info bi ON b.id_number = bi.id_number
+                JOIN reserved_books rb ON bi.BUID = rb.BUID
                 WHERE b.name_book = %s
                     AND b.author = %s
                     AND b.creation_date = %s
@@ -284,7 +285,7 @@ def get_book():
                         SELECT UUID_
                         FROM students_info
                         WHERE FIO = %s
-                );
+                    );
             """
             values = (book_name, book_author, creation_date, student_name)
             
